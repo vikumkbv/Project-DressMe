@@ -110,3 +110,29 @@ def getColorInformation(estimator_labels, estimator_cluster, hasThresholding=Fal
         colorInformation.append(colorInfo)
 
     return colorInformation
+
+    def extractDominantColor(image, number_of_colors=5, hasThresholding=False):
+
+    # Quick Fix Increase cluster counter to neglect the black(Read Article)
+    if hasThresholding == True:
+        number_of_colors += 1
+
+    # Taking Copy of the image
+    img = image.copy()
+
+    # Convert Image into RGB Colours Space
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+    # Reshape Image
+    img = img.reshape((img.shape[0]*img.shape[1]), 3)
+
+    # Initiate KMeans Object
+    estimator = KMeans(n_clusters=number_of_colors, random_state=0)
+
+    # Fit the image
+    estimator.fit(img)
+
+    # Get Colour Information
+    colorInformation = getColorInformation(
+        estimator.labels_, estimator.cluster_centers_, hasThresholding)
+    return colorInformation
