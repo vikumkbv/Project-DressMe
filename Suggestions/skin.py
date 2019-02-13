@@ -136,3 +136,14 @@ def getColorInformation(estimator_labels, estimator_cluster, hasThresholding=Fal
     colorInformation = getColorInformation(
         estimator.labels_, estimator.cluster_centers_, hasThresholding)
     return colorInformation
+	
+#image url	
+image = imutils.url_to_image(
+    "https://static-32.sinclairstoryline.com/resources/media/809642a7-7513-473f-c391-28b5bda5fba3-809642a77513473fc39128b5bda5fba3rendition_1_mark_christopher.jpg?1496596547423")
+
+# Resize image to a width of 250
+image = imutils.resize(image, width=250)
+skin = extractSkin(image)
+
+dominantColors = extractDominantColor(skin, hasThresholding=True)
+print(pprint.pformat(dominantColors[0]))
