@@ -146,7 +146,7 @@ def print_data(color_info):
         print(pprint.pformat(x))
         print()
 
-# Resize image to a width of 250
+# Resize image
 image = imutils.resize(image, width=250)
 skin = extractSkin(image)
 
