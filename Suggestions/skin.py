@@ -141,6 +141,11 @@ def getColorInformation(estimator_labels, estimator_cluster, hasThresholding=Fal
 image = imutils.url_to_image(
     "https://static-32.sinclairstoryline.com/resources/media/809642a7-7513-473f-c391-28b5bda5fba3-809642a77513473fc39128b5bda5fba3rendition_1_mark_christopher.jpg?1496596547423")
 
+def print_data(color_info):
+    for x in color_info:
+        print(pprint.pformat(x))
+        print()
+
 # Resize image to a width of 250
 image = imutils.resize(image, width=250)
 skin = extractSkin(image)
