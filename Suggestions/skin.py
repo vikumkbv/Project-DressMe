@@ -111,7 +111,7 @@ def getColorInformation(estimator_labels, estimator_cluster, hasThresholding=Fal
 
     return colorInformation
 
-    def extractDominantColor(image, number_of_colors=5, hasThresholding=False):
+def extractDominantColor(image, number_of_colors=5, hasThresholding=False):
 
     # Quick Fix Increase cluster counter to neglect the black(Read Article)
     if hasThresholding == True:
