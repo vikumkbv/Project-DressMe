@@ -47,7 +47,7 @@ state = { loggedIn: null }
         break;
         
       case false:
-        return <Login />;
+        return <Dashboard />;
         break;
 
       default: 
