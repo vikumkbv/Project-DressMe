@@ -40,7 +40,12 @@ export default class Login extends Component {
         const email = this.state.email;
         const password = this.state.password;
     
-        firebase.auth().signInWithEmailAndPassword(email, password);
+        firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+            // Handle Errors
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            alert(errorMessage);
+          });
     }
   constructor(props) {
     super(props);
