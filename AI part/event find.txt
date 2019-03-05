@@ -1,0 +1,8 @@
+Dressesme-venu
+f22d5583570246c8a42dc169935b2780  - key 1
+e4e8592cec454abe9f29970c8a3c701f  - key 2
+
+Request Url for venue find call - https://centralus.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases
+
+
+ 
