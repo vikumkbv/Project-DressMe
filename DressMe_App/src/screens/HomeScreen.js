@@ -1,3 +1,4 @@
+// Gigara Hettige
 import React, { Component } from 'react';
 import { View, Text,TextInput, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 
@@ -9,13 +10,32 @@ export default class HomeScreen extends Component {
     };
   }
   componentDidMount(){
-    return fetch('https://facebook.github.io/react-native/movies.json')
+    let data = {
+      method: 'POST',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      body: JSON.stringify({
+        "documents": [
+          {
+            "language": "en",
+            "id": "1",
+            "text": "today going to a dinner"
+          }
+        ]
+      }),
+      headers: {
+        'Accept':       'application/json',
+        'Content-Type': 'application/json',
+        'Ocp-Apim-Subscription-Key':'f22d5583570246c8a42dc169935b2780'
+      }
+    }
+    return fetch('https://centralus.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases',data)
       .then((response) => response.json())
       .then((responseJson) => {
-
+        
         this.setState({
           isLoading: false,
-          dataSource: responseJson.movies,
+          dataSource: responseJson.documents,
         }, function(){
 
         });
@@ -39,7 +59,6 @@ export default class HomeScreen extends Component {
 
         <TextInput
         label="email"
-        value={this.props.email}
         placeholder="What's your focus today ? " 
         placeholderTextColor='#999'
         returnKeyType="next"
@@ -47,7 +66,7 @@ export default class HomeScreen extends Component {
 
         <FlatList
         data={this.state.dataSource}
-        renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
+        renderItem={({item}) => <Text>{item.keyPhrases}</Text>}
         keyExtractor={({id}, index) => id}
         />
       </View>
