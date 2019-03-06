@@ -1,6 +1,6 @@
 # Project DressMe - Team CodeKnights
 # @Gigara Hettige
-
+#!pip install webcolors
 import numpy as np
 import cv2
 from sklearn.cluster import KMeans
@@ -8,6 +8,7 @@ from collections import Counter
 import imutils
 import pprint
 from matplotlib import pyplot as plt
+import webcolors
 
 
 def extractSkin(image):
@@ -150,5 +151,24 @@ def print_data(color_info):
 image = imutils.resize(image, width=250)
 skin = extractSkin(image)
 
+def closest_colour(requested_colour):
+    min_colours = {}
+    for key, name in webcolors.css3_hex_to_names.items():
+        r_c, g_c, b_c = webcolors.hex_to_rgb(key)
+        rd = (r_c - requested_colour[0]) ** 2
+        gd = (g_c - requested_colour[1]) ** 2
+        bd = (b_c - requested_colour[2]) ** 2
+        min_colours[(rd + gd + bd)] = name
+    return min_colours[min(min_colours.keys())]
+
+def get_colour_name(requested_colour):
+    try:
+        closest_name = actual_name = webcolors.rgb_to_name(requested_colour)
+    except ValueError:
+        closest_name = closest_colour(requested_colour)
+        actual_name = None
+    return "Colour name:", closest_name
+
 dominantColors = extractDominantColor(skin, hasThresholding=True)
-print(pprint.pformat(dominantColors[0]))
+
+print (get_colour_name((dominantColors[0][0], dominantColors[0][1], dominantColors[0][2])))
