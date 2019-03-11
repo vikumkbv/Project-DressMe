@@ -1,15 +1,21 @@
 // Gigara Hettige
 import React, { Component } from 'react';
 import { View, Text,TextInput, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import {test} from '../functions/nlpGetEvent';
 
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true
+      userText:"",
+      isLoading: false
     };
   }
-  componentDidMount(){
+  getEvent(text){
+    this.setState({
+      isLoading: true,
+    });
+
     let data = {
       method: 'POST',
       credentials: 'same-origin',
@@ -19,7 +25,7 @@ export default class HomeScreen extends Component {
           {
             "language": "en",
             "id": "1",
-            "text": "today going to a dinner"
+            "text": text.text
           }
         ]
       }),
@@ -58,11 +64,15 @@ export default class HomeScreen extends Component {
         <Text></Text>
 
         <TextInput
+        onSubmitEditing={ (e) => this.getEvent(this.state.userText) }
+        //value={this.state.userText}
+        onChangeText={ (text) => this.setState({userText:{text}})}
         label="email"
-        placeholder="What's your focus today ? " 
+        placeholder="What's your focus today? " 
         placeholderTextColor='#999'
-        returnKeyType="next"
-        style={styles.input}/>
+        style={styles.input}
+        returnKeyType={"done"}
+        />
 
         <FlatList
         data={this.state.dataSource}
