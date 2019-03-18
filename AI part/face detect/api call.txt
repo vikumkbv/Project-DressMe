@@ -1,2 +1,6 @@
 URL : https://centralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=smile,age,gender,blur,exposure,noise,facialHair,glasses,hair
 
+Headers : 
+	Ocp-Apim-Subscription-Key : f0acd56401bd4049bd4823b32d2c07e7
+	Content-Type : application/json
+
