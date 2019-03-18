@@ -31,7 +31,7 @@ JAVA Script implementation
             // Request parameters
             "returnFaceId": "true",
             "returnFaceLandmarks": "false",
-            "returnFaceAttributes": "{string}",
+            "returnFaceAttributes": "{smile,age,gender,blur,exposure,noise,facialHair,glasses,hair}",
         };
       
         $.ajax({
@@ -39,7 +39,7 @@ JAVA Script implementation
             beforeSend: function(xhrObj){
                 // Request headers
                 xhrObj.setRequestHeader("Content-Type","application/json");
-                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","{subscription key}");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","{f0acd56401bd4049bd4823b32d2c07e7}");
             },
             type: "POST",
             // Request body
