@@ -4,3 +4,8 @@ Headers :
 	Ocp-Apim-Subscription-Key : f0acd56401bd4049bd4823b32d2c07e7
 	Content-Type : application/json
 
+Json body :
+	{
+    "url": "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
+  
+	}  //this is the picture url that should be come from firestore or anyother source
