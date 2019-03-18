@@ -1,0 +1,59 @@
+URL : https://centralus.api.cognitive.microsoft.com/face/v1.0/detect?returnFaceId=true&returnFaceLandmarks=false&returnFaceAttributes=smile,age,gender,blur,exposure,noise,facialHair,glasses,hair
+
+Headers : 
+	Ocp-Apim-Subscription-Key : f0acd56401bd4049bd4823b32d2c07e7
+	Content-Type : application/json
+
+Json body :
+	{
+    "url": "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
+  
+	}  
+
+//this is the picture url that should be come from firestore or anyother source
+
+
+JAVA Script implementation
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSSample</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+</head>
+<body>
+
+<script type="text/javascript">
+    $(function() {
+        var params = {
+            // Request parameters
+            "returnFaceId": "true",
+            "returnFaceLandmarks": "false",
+            "returnFaceAttributes": "{smile,age,gender,blur,exposure,noise,facialHair,glasses,hair}",
+        };
+      
+        $.ajax({
+            url: "https://centralus.api.cognitive.microsoft.com/face/v1.0/detect?" + $.param(params),
+            beforeSend: function(xhrObj){
+                // Request headers
+                xhrObj.setRequestHeader("Content-Type","application/json");
+                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key","{f0acd56401bd4049bd4823b32d2c07e7}");
+            },
+            type: "POST",
+            // Request body
+            data: "{body}",
+        })
+        .done(function(data) {
+            alert("success");
+        })
+        .fail(function() {
+            alert("error");
+        });
+    });
+</script>
+</body>
+</html>
+
+
