@@ -1,21 +1,47 @@
+// Gigara Hettige
 import React, { Component } from 'react';
 import { View, Text,TextInput, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import {test} from '../functions/nlpGetEvent';
 
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoading: true
+      userText:"",
+      isLoading: false
     };
   }
-  componentDidMount(){
-    return fetch('https://facebook.github.io/react-native/movies.json')
+  getEvent(text){
+    this.setState({
+      isLoading: true,
+    });
+
+    let data = {
+      method: 'POST',
+      credentials: 'same-origin',
+      mode: 'same-origin',
+      body: JSON.stringify({
+        "documents": [
+          {
+            "language": "en",
+            "id": "1",
+            "text": text.text
+          }
+        ]
+      }),
+      headers: {
+        'Accept':       'application/json',
+        'Content-Type': 'application/json',
+        'Ocp-Apim-Subscription-Key':'f22d5583570246c8a42dc169935b2780'
+      }
+    }
+    return fetch('https://centralus.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases',data)
       .then((response) => response.json())
       .then((responseJson) => {
-
+        
         this.setState({
           isLoading: false,
-          dataSource: responseJson.movies,
+          dataSource: responseJson.documents,
         }, function(){
 
         });
@@ -38,16 +64,19 @@ export default class HomeScreen extends Component {
         <Text></Text>
 
         <TextInput
+        onSubmitEditing={ (e) => this.getEvent(this.state.userText) }
+        value={this.state.userText}
+        onChangeText={ (text) => this.setState({userText:{text}})}
         label="email"
-        value={this.props.email}
-        placeholder="What's your focus today ? " 
+        placeholder="What's your focus today? " 
         placeholderTextColor='#999'
-        returnKeyType="next"
-        style={styles.input}/>
+        style={styles.input}
+        returnKeyType={"done"}
+        />
 
         <FlatList
         data={this.state.dataSource}
-        renderItem={({item}) => <Text>{item.title}, {item.releaseYear}</Text>}
+        renderItem={({item}) => <Text>{item.keyPhrases}</Text>}
         keyExtractor={({id}, index) => id}
         />
       </View>

@@ -1,3 +1,4 @@
+// Gigara Hettige
 import React, { Component } from 'react';
 import { View, Text, StyleSheet,CameraRoll, ScrollView } from 'react-native';
 import { createAppContainer } from 'react-navigation';
