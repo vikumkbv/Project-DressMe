@@ -1,7 +1,7 @@
 // Gigara Hettige
 import React, { Component } from 'react';
 import { View, Text,TextInput, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import {test} from '../functions/nlpGetEvent';
+import {getEvent} from '../functions/nlpGetEvent';
 
 export default class HomeScreen extends Component {
   constructor(props) {
@@ -11,46 +11,22 @@ export default class HomeScreen extends Component {
       isLoading: false
     };
   }
-  getEvent(text){
+
+  // calling nlp method
+  getnlp(text) {
+    // showing the loading status
     this.setState({
-      isLoading: true,
-    });
-
-    let data = {
-      method: 'POST',
-      credentials: 'same-origin',
-      mode: 'same-origin',
-      body: JSON.stringify({
-        "documents": [
-          {
-            "language": "en",
-            "id": "1",
-            "text": text.text
-          }
-        ]
-      }),
-      headers: {
-        'Accept':       'application/json',
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key':'f22d5583570246c8a42dc169935b2780'
-      }
-    }
-    return fetch('https://centralus.api.cognitive.microsoft.com/text/analytics/v2.0/keyPhrases',data)
-      .then((response) => response.json())
-      .then((responseJson) => {
-        
-        this.setState({
-          isLoading: false,
-          dataSource: responseJson.documents,
-        }, function(){
-
+          isLoading: true,
         });
+    Promise.all([getEvent(text)]).then(([event]) => {
 
-      })
-      .catch((error) =>{
-        console.warn(error);
+      this.setState({
+        isLoading: false,
+        dataSource: event
       });
+    });
   }
+
   render() {
     if(this.state.isLoading){
       return(
@@ -64,8 +40,8 @@ export default class HomeScreen extends Component {
         <Text></Text>
 
         <TextInput
-        onSubmitEditing={ (e) => this.getEvent(this.state.userText) }
-        value={this.state.userText}
+        onSubmitEditing={ (e) => this.getnlp(this.state.userText) }
+        value={this.state.userText.text}
         onChangeText={ (text) => this.setState({userText:{text}})}
         label="email"
         placeholder="What's your focus today? " 
