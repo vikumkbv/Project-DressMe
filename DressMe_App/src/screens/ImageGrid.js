@@ -25,7 +25,7 @@ export default class ImageGrid extends Component {
 
     var that = this;
     let items = Array.apply(null, Array(12)).map((v, i) => {
-      return { id: i, src: 'http://placehold.it/200x200?text=' + this.state.event + (i + 1) };
+      return { id: i, src: 'http://35.198.196.36/dataset/' + this.state.event + '/1 ('+(i + 1)+').jpg' };
     });
     that.setState({
       //Setting the data source
