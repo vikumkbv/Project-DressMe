@@ -32,12 +32,12 @@ state = { loggedIn: false }
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user) => {
       
-      // if (user) {
-      //   this.setState({ loggedIn: true });
-      // } else {
-      //   this.setState({ loggedIn: false });
+      if (user) {
+        this.setState({ loggedIn: true });
+      } else {
+        this.setState({ loggedIn: false });
     
-      // }
+      }
     });
   }
 
