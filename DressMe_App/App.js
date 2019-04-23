@@ -17,6 +17,7 @@ import './src/Firebase';
 // screens
 import Login from './src/screens/Login';
 import Dashboard from './src/screens/dashboard';
+import LoginNavigator from './src/navigation/LoginNavigator';
 import {Spinner} from './src/screens/Spinner';
 
 type Props = {};
@@ -26,17 +27,17 @@ export default class App extends Component<Props> {
     super(props);
 }
 
-state = { loggedIn: null }
+state = { loggedIn: false }
 
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user) => {
       
-      if (user) {
-        this.setState({ loggedIn: true });
-      } else {
-        this.setState({ loggedIn: false });
+      // if (user) {
+      //   this.setState({ loggedIn: true });
+      // } else {
+      //   this.setState({ loggedIn: false });
     
-      }
+      // }
     });
   }
 
@@ -47,12 +48,12 @@ state = { loggedIn: null }
         break;
         
       case false:
-        return <Dashboard />;
+        return <LoginNavigator />;
         break;
 
       default: 
       return <View style={styles.Spinner}><Spinner /></View>;
-
+s
     }
   }
     render() {
