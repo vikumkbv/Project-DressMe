@@ -12,6 +12,7 @@ import math
 
 app = Flask(__name__)
 
+
 @app.route("/")
 def home():
     return "Loading.... Dressme Color detection API"
@@ -113,7 +114,7 @@ def getColorInformation(estimator_labels, estimator_cluster, hasThresholding=Fal
         # make the dictionay of the information
         #colorInfo = {"cluster_index": index, "color": color,"color_percentage": color_percentage}
         colorInfo = color
-        
+
         # Add the dictionary to the list
         colorInformation.append(colorInfo)
 
@@ -146,80 +147,85 @@ def extractDominantColor(image, number_of_colors=5, hasThresholding=False):
         estimator.labels_, estimator.cluster_centers_, hasThresholding)
     return colorInformation
 
+
 def print_data(color_info):
     for x in color_info:
         print(pprint.pformat(x))
         print()
-        
-letters="A B C D E F".split()        
+
+
+letters = "A B C D E F".split()
+
+
 def toHex(r, g, b):
-    r1=math.floor(r/16)
-    if r1>9:
-        r1=letters[r1-10]
-    r2=r%16
-    if r2>9:
-        r2=letters[r2-10]       
-    g1=math.floor(g/16)
-    if g1>9:
-        g1=letters[g1-10]
-    g2=g%16
-    if g2>9:
-        g2=letters[g2-10]     
-    b1=math.floor(b/16)
-    if b1>9:
-        b1=letters[b1-10]
-    b2=b%16
-    if b2>9:
-        b2=letters[b2-10]        
-    r1=str(r1)
-    r2=str(r2)
-    g1=str(g1)
-    g2=str(g2)
-    b1=str(b1)
-    b2=str(b2)         
-    hex=r1+r2+g1+g2+b1+b2
+    r1 = math.floor(r/16)
+    if r1 > 9:
+        r1 = letters[r1-10]
+    r2 = r % 16
+    if r2 > 9:
+        r2 = letters[r2-10]
+    g1 = math.floor(g/16)
+    if g1 > 9:
+        g1 = letters[g1-10]
+    g2 = g % 16
+    if g2 > 9:
+        g2 = letters[g2-10]
+    b1 = math.floor(b/16)
+    if b1 > 9:
+        b1 = letters[b1-10]
+    b2 = b % 16
+    if b2 > 9:
+        b2 = letters[b2-10]
+    r1 = str(r1)
+    r2 = str(r2)
+    g1 = str(g1)
+    g2 = str(g2)
+    b1 = str(b1)
+    b2 = str(b2)
+    hex = r1+r2+g1+g2+b1+b2
     return hex
-	
+
 # Get Image from URL.
     #image = imutils.url_to_image("https://sa1s3optim.patientpop.com/assets/images/provider/photos/1868984.jpg")
 
-#image = imutils.url_to_image("https://static-32.sinclairstoryline.com/resources/media/809642a7-7513-473f-c391-28b5bda5fba3-809642a77513473fc39128b5bda5fba3rendition_1_mark_christopher.jpg?1496596547423") #man white
+
+# image = imutils.url_to_image("https://static-32.sinclairstoryline.com/resources/media/809642a7-7513-473f-c391-28b5bda5fba3-809642a77513473fc39128b5bda5fba3rendition_1_mark_christopher.jpg?1496596547423") #man white
 #image = imutils.url_to_image("https://images.freeimages.com/images/small-previews/42e/girl-1518718.jpg")
-#image = imutils.url_to_image("https://www.todaysparent.com/wp-content/uploads/2017/06/Black-girls-face-discrimination-as-young-as-five-years-old-says-new-study-1024x576-1498759744.jpg") #black girl
+# image = imutils.url_to_image("https://www.todaysparent.com/wp-content/uploads/2017/06/Black-girls-face-discrimination-as-young-as-five-years-old-says-new-study-1024x576-1498759744.jpg") #black girl
 #image = imutils.url_to_image("https://ak6.picdn.net/shutterstock/videos/13947446/thumb/1.jpg")
-image = imutils.url_to_image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOmZfoCvxe4-RGq4U3EPiLTYly2oai_vU7EpAk3oYNtWVkaP3i")
-#image = imutils.url_to_image("https://pbs.twimg.com/profile_images/1003266193493450753/6-o5iDD8_400x400.jpg") #charith
-#image = imutils.url_to_image("https://c1.staticflickr.com/6/5594/14403426954_a668d944c1_b.jpg") #banu
+#image = imutils.url_to_image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOmZfoCvxe4-RGq4U3EPiLTYly2oai_vU7EpAk3oYNtWVkaP3i")
+# image = imutils.url_to_image("https://pbs.twimg.com/profile_images/1003266193493450753/6-o5iDD8_400x400.jpg") #charith
+#image = imutils.url_to_image("https://c1.staticflickr.com/6/5594/14403426954_a668d944c1_b.jpg")  # banu
+#image = imutils.resize(image, width=250)
+#skin = extractSkin(image)
+#dominantColors = extractDominantColor(skin, hasThresholding=True)
 
-@app.route("/result" , methods=['GET', 'POST'])
-def runDressme():
-	
+# @app.route("/result/", defaults={'pic':''} , methods=['GET', 'POST'])
+
+
+@app.route("/result/<path:pic>", methods=['GET', 'POST'])
+def runDressme(pic):
+    #pic = request.args.get('pic')
 # Resize image to a width of 250
-	image = imutils.url_to_image("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOmZfoCvxe4-RGq4U3EPiLTYly2oai_vU7EpAk3oYNtWVkaP3i")
-	image = imutils.resize(image, width=250)
-	skin = extractSkin(image)
+    image = imutils.url_to_image(pic)
+    image = imutils.resize(image, width=250)
+    skin = extractSkin(image)
+    global dominantColors
+    dominantColors = extractDominantColor(skin, hasThresholding=True)
+# print(pprint.pformat(dominantColors[0]))
+    rgb = (pprint.pformat(dominantColors[0]))
+    hexColor = (toHex(int(dominantColors[0][0]), int(dominantColors[0][1]), int(dominantColors[0][2])))
 
-	dominantColors = extractDominantColor(skin, hasThresholding=True)
-	#print(pprint.pformat(dominantColors[0]))
+    return  (rgb,hexColor)
 
-	return ((pprint.pformat(dominantColors[0])) , (toHex(int(dominantColors[0][0]),int(dominantColors[0][1]),int(dominantColors[0][2]))))
 
-@app.route("/hex" , methods=['GET', 'POST'])
-def hexcc():
-#print(toHex(int(dominantColors[0][0]),int(dominantColors[0][1]),int(dominantColors[0][2])))
-	return (toHex(int(dominantColors[0][0]),int(dominantColors[0][1]),int(dominantColors[0][2])))
+@app.route("/hex", methods=['GET', 'POST'])
+def hex():
+    # print(toHex(int(dominantColors[0][0]),int(dominantColors[0][1]),int(dominantColors[0][2])))
+    return (toHex(int(dominantColors[0][0]), int(dominantColors[0][1]), int(dominantColors[0][2])))
 #print("Color Information")
-#print_data(dominantColors)
-
-
+# print_data(dominantColors)
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0',port=5000,debug=True) 
-
-
-
-
-
-
-
+    app.run(host='0.0.0.0', port=5000, debug=True)
