@@ -1,6 +1,6 @@
 // Gigara Hettige
 import React, { Component } from 'react';
-import { View, Text, StyleSheet,CameraRoll, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 
 import AppNavigator from '../navigation/routes';
@@ -18,17 +18,14 @@ export default class Dashboard extends Component {
   }
 
   _handleButtonPress = () => {
-    CameraRoll.getPhotos({ first: 1000000 })
-        .then(res => {
-          console.warn(res, "images data")
-        })
+    this.props.navigation.openDrawer();
     };
 
   render() {
     return (
       <View style={{ flex: 1}}>
         <View style={styles.header}>
-          <Icon.Button name='ios-camera' backgroundColor="#444" size={48} color='white' onPress={this._handleButtonPress}/>
+          <Icon.Button name='ios-menu' backgroundColor="#444" size={36} color='white' onPress={this._handleButtonPress}/>
           <View style={styles.logo}>
             <Text style={{color:'white', fontSize: 22}}>DressMe</Text>
           </View>

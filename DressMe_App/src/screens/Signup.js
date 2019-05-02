@@ -1,3 +1,4 @@
+// @Gigara
 import React, { Component } from 'react';
 import {
     Platform, StyleSheet, Text, View, Image,
@@ -109,9 +110,9 @@ export default class Signup extends Component {
             });
 
         function writeUserData(userId, dob, imageUrl) {
-            firebase.database().ref('users/' + userId).push({
+            firebase.database().ref('users/' + userId).set({
                 DOB: dob,
-                skinImageUrl: imageUrl
+                proPicUrl: imageUrl
             });
         }
     }

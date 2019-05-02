@@ -9,6 +9,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View,} from 'react-native';
+import { createAppContainer } from 'react-navigation';
 
 // Fireabase
 import firebase from '@firebase/app';
@@ -16,9 +17,11 @@ import './src/Firebase';
 
 // screens
 import Login from './src/screens/Login';
-import Dashboard from './src/screens/dashboard';
 import LoginNavigator from './src/navigation/LoginNavigator';
 import {Spinner} from './src/screens/Spinner';
+
+//navigator
+import DrawerNavigator from './src/navigation/drawer';
 
 type Props = {};
 
@@ -44,7 +47,7 @@ state = { loggedIn: false }
   renderContent() {
     switch (this.state.loggedIn) {
       case true:
-        return <Dashboard />;
+        return <DrawerNavigator />;
         break;
         
       case false:
@@ -53,7 +56,6 @@ state = { loggedIn: false }
 
       default: 
       return <View style={styles.Spinner}><Spinner /></View>;
-s
     }
   }
     render() {
