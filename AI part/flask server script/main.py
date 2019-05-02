@@ -216,7 +216,7 @@ def runDressme(pic):
     rgb = (pprint.pformat(dominantColors[0]))
     hexColor = (toHex(int(dominantColors[0][0]), int(dominantColors[0][1]), int(dominantColors[0][2])))
 
-    return  (rgb,hexColor)
+    return  (hexColor)
 
 
 @app.route("/hex", methods=['GET', 'POST'])
