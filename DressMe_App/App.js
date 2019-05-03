@@ -4,6 +4,8 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, YellowBox, ActivityIndicator} from 'react-native';
+import Theme, { createStyle } from 'react-native-theming';
+import themes from './src/assets/theme/theme';
 
 // Fireabase
 import firebase from '@firebase/app';
@@ -53,7 +55,7 @@ state = { loggedIn: null }
         break;
 
       default: 
-      return <View style={styles.Spinner}><ActivityIndicator  size="large" color="#0000ff"/></View>;
+      return <Theme.View style={styles.Spinner}><ActivityIndicator  size="large" color="#0000ff"/></Theme.View>;
     }
   }
     render() {
@@ -65,12 +67,12 @@ state = { loggedIn: null }
 }
 
 
-const styles = StyleSheet.create({
+const styles = createStyle({
 
   Spinner: {
     flex: 1,
     opacity: 1,
-    backgroundColor: 'white',
+    backgroundColor: '@backgroundColor',
     alignItems: 'center',
     justifyContent: 'center',
 

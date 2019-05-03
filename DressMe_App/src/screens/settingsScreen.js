@@ -1,10 +1,13 @@
 // @Gigara
 import React, { Component } from 'react';
 import { View, Text, Image, Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import SettingsList from 'react-native-settings-list';
 import PhotoUpload from 'react-native-photo-upload';
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Spinner } from './Spinner';
+import Theme, { createStyle } from 'react-native-theming';
+import themes from '../assets/theme/theme';
 
 import firebase from '@firebase/app';
 import '../Firebase';
@@ -23,6 +26,37 @@ export default class SettingsScreen extends Component {
       this.setState({ bDay: data.DOB });
     });
     this.setState({ name: user.displayName })
+  }
+
+  //change theme
+  changeTheme = async () => {
+    try {
+      await AsyncStorage.setItem('@Dark-Theme', JSON.stringify(!this.state.switchValue));
+      const value = await AsyncStorage.getItem('@Dark-Theme')
+      if(value !== null) {
+        this.setState({
+          switchValue: JSON.parse(value),
+        })
+        Alert.alert("Please restart the App");
+      }
+    } catch (error) {
+      // Error saving data
+    }
+  };
+
+  componentWillMount = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@Dark-Theme')
+      if(value !== null) {
+        this.setState({
+          switchValue: JSON.parse(value),
+        })
+      }else{
+        await AsyncStorage.setItem('@Dark-Theme', JSON.stringify(false));
+      }
+    } catch(e) {
+      // error reading value
+    }
   }
 
   // change profile picture
@@ -65,9 +99,7 @@ export default class SettingsScreen extends Component {
 
   constructor() {
     super();
-    this.onValueChange = this.onValueChange.bind(this);
     this.state = {
-      switchValue: false,
       loading: false,
     };
   }
@@ -75,77 +107,75 @@ export default class SettingsScreen extends Component {
   render() {
     return (
       <View style={{ backgroundColor: '#EFEFF4', flex: 1 }}>
-        <View style={{ borderBottomWidth: 1, backgroundColor: '#f7f7f8', borderColor: '#c8c7cc' }}>
-          <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 16 }}>Settings</Text>
-        </View>
-        <View style={{ flex: 1 }}>
-          <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
-            <SettingsList.Header headerStyle={{ marginTop: 5 }} />
-            <View style={{ backgroundColor: 'white', paddingTop: 10 }}>
-              <PhotoUpload
-                onPhotoSelect={avatar => {
-                  if (avatar) {
-                    this.onPhotoChange(avatar);
-                  }
-                }}
-              >
-                <Image
-                  style={{
-                    paddingVertical: 30,
-                    width: 150,
-                    height: 150,
-                    borderRadius: 75
-                  }}
-                  resizeMode='cover'
-                  source={{
-                    uri: this.state.ProPicurl
-                  }}
-                />
-              </PhotoUpload>
-            </View>
-            <SettingsList.Item
-              title='Name'
-              titleInfo={this.state.name}
-              hasNavArrow={false}
-              onPress={() => Alert.alert('Name Cannot be changed')}
-            />
-            <SettingsList.Item
-              title='Birth Day'
-              titleInfo={this.state.bDay}
-              hasNavArrow={false}
-              onPress={() => Alert.alert('Cannot be changed')}
-            />
-
-            <SettingsList.Header headerStyle={{ color: 'white', marginTop: 10 }} />
-
-            <SettingsList.Item
-              hasNavArrow={false}
-              switchState={this.state.switchValue}
-              switchOnValueChange={this.onValueChange}
-              hasSwitch={true}
-              title='Dark Mode' />
-            <SettingsList.Item
-              hasNavArrow={false}
-              title='Logout'
-              onPress={() => {this.logout()}} />
-            <SettingsList.Item
-              hasNavArrow={false}
-              title='Delete Account'
-              titleStyle={{ color: 'red' }}
-              onPress={() => Alert.alert('This will delete your account and data')} />
-
-          </SettingsList>
-        </View>
-        {/* loding icon */}
-        {this.state.loading &&
-          <Spinner />
-        }
+      <View style={{ borderBottomWidth: 1, backgroundColor: '#f7f7f8', borderColor: '#c8c7cc' }}>
+        <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 16 }}>Settings</Text>
       </View>
+      <View style={{ flex: 1 }}>
+        <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
+          <SettingsList.Header headerStyle={{ marginTop: 5 }} />
+          <View style={{ backgroundColor: 'white', paddingTop: 10 }}>
+            <PhotoUpload
+              onPhotoSelect={avatar => {
+                if (avatar) {
+                  this.onPhotoChange(avatar);
+                }
+              }}
+            >
+              <Image
+                style={{
+                  paddingVertical: 30,
+                  width: 150,
+                  height: 150,
+                  borderRadius: 75
+                }}
+                resizeMode='cover'
+                source={{
+                  uri: this.state.ProPicurl
+                }}
+              />
+            </PhotoUpload>
+          </View>
+          <SettingsList.Item
+            title='Name'
+            titleInfo={this.state.name}
+            hasNavArrow={false}
+            onPress={() => Alert.alert('Name Cannot be changed')}
+          />
+          <SettingsList.Item
+            title='Birth Day'
+            titleInfo={this.state.bDay}
+            hasNavArrow={false}
+            onPress={() => Alert.alert('Cannot be changed')}
+          />
+
+          <SettingsList.Header headerStyle={{ color: 'white', marginTop: 10 }} />
+
+          <SettingsList.Item
+            hasNavArrow={false}
+            switchState={this.state.switchValue}
+            switchOnValueChange={this.onValueChange}
+            hasSwitch={true}
+            title='Dark Mode' />
+          <SettingsList.Item
+            hasNavArrow={false}
+            title='Logout'
+            onPress={() => {this.logout()}} />
+          <SettingsList.Item
+            hasNavArrow={false}
+            title='Delete Account'
+            titleStyle={{ color: 'red' }}
+            onPress={() => Alert.alert('This will delete your account and data')} />
+
+        </SettingsList>
+      </View>
+      {/* loding icon */}
+      {this.state.loading &&
+        <Spinner />
+      }
+    </View>
     );
   }
 
-  onValueChange(value) {
-    this.setState({ switchValue: value });
-  }
+
 }
 

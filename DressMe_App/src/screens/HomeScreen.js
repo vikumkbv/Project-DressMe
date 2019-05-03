@@ -1,8 +1,10 @@
 // Gigara Hettige
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, FlatList, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, FlatList, ActivityIndicator, ScrollView, AsyncStorage } from 'react-native';
 import { getEvent } from '../functions/nlpGetEvent';
 import ImageGrid from './ImageGrid';
+import Theme, { createStyle } from 'react-native-theming';
+import themes from '../assets/theme/theme';
 
 export default class HomeScreen extends Component {
   constructor(props) {
@@ -14,6 +16,19 @@ export default class HomeScreen extends Component {
       event: null,
     };
   }
+  componentWillMount = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@Dark-Theme');
+      if (value !== null) {
+        if(value == 'false'){
+          themes[0].apply();
+        }else{
+          themes[1].apply();
+        }
+      }
+    } catch (error) {
+    }
+  };
 
   // calling nlp method
   getnlp(text) {
@@ -40,7 +55,7 @@ export default class HomeScreen extends Component {
       )
     }
     return (
-      <ScrollView style={styles.container}>
+      <Theme.View style={styles.container}>
         <Text></Text>
 
         <TextInput
@@ -57,12 +72,12 @@ export default class HomeScreen extends Component {
         <View style={styles.GridContainer}>
           <ImageGrid event={this.state.event} />
         </View>
-      </ScrollView>
+      </Theme.View>
     );
   }
 }
 
-const styles = StyleSheet.create({
+const styles = createStyle({
   input: {
     fontSize: 18,
     padding: 10,
@@ -81,6 +96,7 @@ const styles = StyleSheet.create({
 
   container: {
     flex:1,
+    backgroundColor: '@backgroundColor',
   }
 
 })
