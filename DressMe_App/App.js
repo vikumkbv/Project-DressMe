@@ -1,36 +1,34 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- * @lint-ignore-every XPLATJSCOPYRIGHT1
+ * @Gigara
  */
 
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View,} from 'react-native';
-import { createAppContainer } from 'react-navigation';
+import {Platform, StyleSheet, Text, View, YellowBox, ActivityIndicator} from 'react-native';
 
 // Fireabase
 import firebase from '@firebase/app';
 import './src/Firebase';
 
 // screens
-import Login from './src/screens/Login';
 import LoginNavigator from './src/navigation/LoginNavigator';
-import {Spinner} from './src/screens/Spinner';
 
 //navigator
 import DrawerNavigator from './src/navigation/drawer';
 
 type Props = {};
 
+// disable warnings comes from plugin issues
+YellowBox.ignoreWarnings(['componentWillUpdate']);
+YellowBox.ignoreWarnings(['componentWillReceiveProps']);
+YellowBox.ignoreWarnings(['componentWillMount']);
+YellowBox.ignoreWarnings(['Setting a timer']);
+
 export default class App extends Component<Props> {
    constructor(props) {
     super(props);
 }
 
-state = { loggedIn: false }
+state = { loggedIn: null }
 
   componentWillMount() {
     firebase.auth().onAuthStateChanged((user) => {
@@ -55,7 +53,7 @@ state = { loggedIn: false }
         break;
 
       default: 
-      return <View style={styles.Spinner}><Spinner /></View>;
+      return <View style={styles.Spinner}><ActivityIndicator  size="large" color="#0000ff"/></View>;
     }
   }
     render() {
@@ -71,6 +69,8 @@ const styles = StyleSheet.create({
 
   Spinner: {
     flex: 1,
+    opacity: 1,
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center',
 

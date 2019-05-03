@@ -17,9 +17,7 @@ import firebase from '@firebase/app';
 import '../Firebase';
 
 export default class Login extends Component {
-
- 
-
+  
   onEmailChange = (text) => {
     this.state.email = text;
   }
