@@ -1,2 +1,3 @@
 # Software Development Group Project
-* This repo is used to develop sdgp project
+
+* This repository is used to collaborate for the software development group project.
