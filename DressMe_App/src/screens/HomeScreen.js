@@ -6,6 +6,11 @@ import ImageGrid from './ImageGrid';
 import Theme, { createStyle } from 'react-native-theming';
 import themes from '../assets/theme/theme';
 
+import firebase from '@firebase/app';
+import '../Firebase';
+import 'firebase/auth';
+import 'firebase/database';
+
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -18,6 +23,7 @@ export default class HomeScreen extends Component {
   }
   componentWillMount = async () => {
     try {
+      // check theme
       const value = await AsyncStorage.getItem('@Dark-Theme');
       if (value !== null) {
         if(value == 'false'){
@@ -25,6 +31,65 @@ export default class HomeScreen extends Component {
         }else{
           themes[1].apply();
         }
+
+        this.setState({ isLoading: true });
+        // check skin color
+        ; (async () => {
+          const profilePicUrl = await AsyncStorage.getItem('@ProfilePic-Url');
+
+          // get proPic from database
+          var user = firebase.auth().currentUser;
+          let itemsRef = firebase.database().ref('users/' + user.uid);
+
+          itemsRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            if (data.proPicUrl != profilePicUrl) {
+
+              // get skin tone
+              var encodedKey = encodeURIComponent('pic');
+              var encodedValue = encodeURIComponent(profilePicUrl);
+
+              fetch("http://35.189.40.50:5000/result/", {
+                method: 'POST',
+                headers: new Headers({
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                }),
+                body: encodedKey + "=" + encodedValue
+              })
+                .then((response) => response.text())
+                .then((responseText) => {
+                  // get skin color range
+                  fetch('http://35.189.40.50:5050/v1/CEB0A0')
+                    .then((response2) => response2.text())
+                    .then((responseText2) => {
+                      var json = JSON.parse(responseText2)
+
+                        ; (async () => {
+                          // save to local
+                          await AsyncStorage.setItem('@ProfilePic-Url', data.proPicUrl);
+                          await AsyncStorage.setItem('@DOB', data.DOB);
+                          await AsyncStorage.setItem('@Skin-Color', responseText);
+                          await AsyncStorage.setItem('@Skin-Color-Range', json.colors[0].name);
+                          // calculate age
+                          var today = new Date();
+                          const age = today.getFullYear() - ((data.DOB).split('-')[0]);
+                          // consloe.warn(age);
+                          await AsyncStorage.setItem('@Age', JSON.stringify(age));
+
+                          this.setState({ isLoading: false });
+                        })();
+                    })
+                })
+                .catch((error) => {
+                  console.warn(error);
+                });
+            }else{
+              this.setState({ isLoading: false });
+            }
+          })
+        })();
+
+        
       }
     } catch (error) {
     }
