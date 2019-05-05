@@ -8,7 +8,7 @@ import imutils
 import pprint
 from matplotlib import pyplot as plt
 import math
-
+from flask import request
 
 app = Flask(__name__)
 
@@ -203,9 +203,9 @@ def toHex(r, g, b):
 # @app.route("/result/", defaults={'pic':''} , methods=['GET', 'POST'])
 
 
-@app.route("/result/<path:pic>", methods=['GET', 'POST'])
-def runDressme(pic):
-    #pic = request.args.get('pic')
+@app.route("/result/", methods=['GET', 'POST'])
+def runDressme():
+    pic = request.form['pic']
 # Resize image to a width of 250
     image = imutils.url_to_image(pic)
     image = imutils.resize(image, width=250)
@@ -228,4 +228,4 @@ def hex():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)
