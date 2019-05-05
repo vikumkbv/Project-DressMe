@@ -17,14 +17,19 @@ import 'firebase/database';
 export default class SettingsScreen extends Component {
   // get user data from the databse
   componentDidMount() {
+    this.setState({ ProPicurl: null });
+    this.setState({ loading: true });
     var user = firebase.auth().currentUser;
     let itemsRef = firebase.database().ref('users/' + user.uid);
     
     itemsRef.on('value', (snapshot) => {
       let data = snapshot.val();
-      this.setState({ ProPicurl: data.proPicUrl });
+      this.setState({ ProPicurl: data.proPicUrl }, () => {
+        this.setState({ loading: false });
+      });
       this.setState({ bDay: data.DOB });
-    });
+      this.setState({ gender: data.gender });
+    })
     this.setState({ name: user.displayName })
   }
 
@@ -147,6 +152,12 @@ export default class SettingsScreen extends Component {
             hasNavArrow={false}
             onPress={() => Alert.alert('Cannot be changed')}
           />
+          <SettingsList.Item
+            title='Gender'
+            titleInfo={this.state.gender}
+            hasNavArrow={false}
+            onPress={() => Alert.alert('Cannot be changed')}
+          />
 
           <SettingsList.Header headerStyle={{ color: 'white', marginTop: 10 }} />
 
@@ -166,10 +177,14 @@ export default class SettingsScreen extends Component {
             titleStyle={{ color: 'red' }}
             onPress={() => Alert.alert('This will delete your account and data')} />
 
-        </SettingsList>
+          </SettingsList>
+          <View style={{ borderBottomWidth: 1, backgroundColor: '#f7f7f8', borderColor: '#c8c7cc' }}>
+            <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 12 }}>
+              Note: Please close and reopen the app to apply changes</Text>
+          </View>
       </View>
       {/* loding icon */}
-      {this.state.loading &&
+      {(this.state.loading) &&
         <Spinner />
       }
     </View>

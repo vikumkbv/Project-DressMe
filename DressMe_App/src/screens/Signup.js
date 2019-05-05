@@ -7,6 +7,7 @@ import {
     KeyboardAvoidingView,
     TouchableOpacity,
     TextInput,
+    Picker
 } from 'react-native';
 
 import DatePicker from 'react-native-datepicker';
@@ -28,6 +29,7 @@ export default class Signup extends Component {
         email: '',
         password: '',
         proPic: '',
+        gender: 'Male',
         error: '',
         loading: false
     };
@@ -60,6 +62,7 @@ export default class Signup extends Component {
         const email = this.state.email;
         const password = this.state.password;
         const proPic = this.state.proPic;
+        const gender = this.state.gender;
 
         // create user in the database
         firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -91,16 +94,16 @@ export default class Signup extends Component {
                         })
                         .then((url) => {
                             // Update users data in the database
-                            writeUserData(user.uid, dob, url)
+                            writeUserData(user.uid, dob, gender, url)
 
                         })
                         .catch((error) => {
-                            console.log(error);
+                            console.warn(error);
 
                         })
 
-                }).catch(function (error) {
-                    var errorMessage = error.message;
+            }).catch(function (error) {
+                var errorMessage = error.message;
                     alert(errorMessage);
                 });
 
@@ -109,10 +112,11 @@ export default class Signup extends Component {
                 alert(errorMessage);
             });
 
-        function writeUserData(userId, dob, imageUrl) {
+        function writeUserData(userId, dob, gender, imageUrl) {
             firebase.database().ref('users/' + userId).set({
                 DOB: dob,
-                proPicUrl: imageUrl
+                proPicUrl: imageUrl,
+                gender: gender,
             });
         }
     }
@@ -214,6 +218,15 @@ export default class Signup extends Component {
                                         }
                                     }}
                                 />
+                                <Picker
+                                    selectedValue={this.state.gender}
+                                    style={Styles.textInput2}
+                                    onValueChange={(itemValue, itemIndex) =>
+                                        this.setState({ gender: itemValue })
+                                    }>
+                                    <Picker.Item label="Male" value="Male" />
+                                    <Picker.Item label="Female" value="Female" />
+                                </Picker>
                                 <TextInput
                                     onChangeText={this.onEmailChange.bind(this)}
                                     label="email"
