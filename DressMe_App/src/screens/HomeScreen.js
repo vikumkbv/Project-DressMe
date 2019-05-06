@@ -18,6 +18,7 @@ export default class HomeScreen extends Component {
       userText: "",
       isLoading: false,
       showModal: false,
+      showTitle: false,
       event: null,
     };
   }
@@ -68,6 +69,7 @@ export default class HomeScreen extends Component {
                           // save to local
                           await AsyncStorage.setItem('@ProfilePic-Url', data.proPicUrl);
                           await AsyncStorage.setItem('@DOB', data.DOB);
+                          await AsyncStorage.setItem('@Gender', data.gender);
                           await AsyncStorage.setItem('@Skin-Color', responseText);
                           await AsyncStorage.setItem('@Skin-Color-Range', json.colors[0].name);
                           // calculate age
@@ -104,10 +106,50 @@ export default class HomeScreen extends Component {
     Promise.all([getEvent(text)]).then(([event]) => {
 
       this.setState({
-        isLoading: false,
         event: event[0].keyPhrases[0],
+      }, () => {
+        this.getColor();
       });
     });
+  }
+
+  getColor = async () =>  {
+    let gender =1;
+    if(await AsyncStorage.getItem('@Gender') == "Male"){
+       gender = 0;
+    }
+    const skinColor = await AsyncStorage.getItem('@Skin-Color-Range');
+
+    //Age
+    let age = await AsyncStorage.getItem('@Age');
+    if(age <20){
+      age =1;
+    }else if(age < 35){
+      age =2;
+    }else{
+      age =3;
+    }
+
+    let occassion = this.state.event;
+    if(occassion == "dinner"){
+      occassion =3;
+    }else if (occassion == "Night Party"){
+      occassion =2;
+    }else if (occassion == "B'Day Party"){
+      occassion = 1;
+    }
+
+    fetch('http://35.189.40.50:8080/api?gender='+gender+'&skin_color='+skinColor+'&occassion='+occassion+'&age='+age)
+      .then((response) => response.text())
+      .then((responseText) => {
+        this.setState(
+          {
+            color: responseText,
+            colorLink: 'color/' + responseText,
+            showTitle: true,
+            isLoading: false,
+          });
+      });
   }
 
 
@@ -121,22 +163,32 @@ export default class HomeScreen extends Component {
     }
     return (
       <Theme.View style={styles.container}>
-        <Text></Text>
+        <ScrollView>
+          <Text></Text>
 
-        <TextInput
-          onSubmitEditing={(e) => this.getnlp(this.state.userText)}
-          value={this.state.userText.text}
-          onChangeText={(text) => this.setState({ userText: { text } })}
-          label="email"
-          placeholder="What's your focus today? "
-          placeholderTextColor='#999'
-          style={styles.input}
-          returnKeyType={"done"}
-        />
+          <TextInput
+            onSubmitEditing={(e) => this.getnlp(this.state.userText)}
+            value={this.state.userText.text}
+            onChangeText={(text) => this.setState({ userText: { text } })}
+            label="email"
+            placeholder="What's your focus today? "
+            placeholderTextColor='#999'
+            style={styles.input}
+            returnKeyType={"done"}
+          />
 
-        <View style={styles.GridContainer}>
-          <ImageGrid event={this.state.event} />
-        </View>
+          {(this.state.showTitle) &&
+            <View style={{ borderBottomWidth: 1, backgroundColor: '#f7f7f8', borderColor: '#c8c7cc' }}>
+              <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 16, textAlign:'center' }}>
+              The most prefered Color for your {this.state.event} is {"\n"}
+              {this.state.color}</Text>
+            </View>
+          }
+
+          <View style={styles.GridContainer}>
+            <ImageGrid event={this.state.colorLink} />
+          </View>
+        </ScrollView>
       </Theme.View>
     );
   }
@@ -150,6 +202,7 @@ const styles = createStyle({
     marginLeft: 'auto',
     marginRight: 'auto',
     borderBottomColor: '#757575',
+    color: '#777',
     borderBottomWidth: 1,
   },
 
