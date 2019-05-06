@@ -19,6 +19,7 @@ export default class HomeScreen extends Component {
       isLoading: false,
       showModal: false,
       showTitle: false,
+      showError: false,
       event: null,
     };
   }
@@ -44,48 +45,50 @@ export default class HomeScreen extends Component {
 
           itemsRef.on('value', (snapshot) => {
             let data = snapshot.val();
-            if (data.proPicUrl != profilePicUrl) {
+            if (data != null && (data.proPicUrl != profilePicUrl)) {
 
               // get skin tone
               var encodedKey = encodeURIComponent('pic');
               var encodedValue = encodeURIComponent(profilePicUrl);
 
-              fetch("http://35.189.40.50:5000/result/", {
-                method: 'POST',
-                headers: new Headers({
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                }),
-                body: encodedKey + "=" + encodedValue
-              })
-                .then((response) => response.text())
-                .then((responseText) => {
-                  // get skin color range
-                  fetch('http://35.189.40.50:5050/v1/CEB0A0')
-                    .then((response2) => response2.text())
-                    .then((responseText2) => {
-                      var json = JSON.parse(responseText2)
-
-                        ; (async () => {
-                          // save to local
-                          await AsyncStorage.setItem('@ProfilePic-Url', data.proPicUrl);
-                          await AsyncStorage.setItem('@DOB', data.DOB);
-                          await AsyncStorage.setItem('@Gender', data.gender);
-                          await AsyncStorage.setItem('@Skin-Color', responseText);
-                          await AsyncStorage.setItem('@Skin-Color-Range', json.colors[0].name);
-                          // calculate age
-                          var today = new Date();
-                          const age = today.getFullYear() - ((data.DOB).split('-')[0]);
-                          // consloe.warn(age);
-                          await AsyncStorage.setItem('@Age', JSON.stringify(age));
-
-                          this.setState({ isLoading: false });
-                        })();
-                    })
+              ; (async () => {
+                await fetch("http://35.189.40.50:5000/result/", {
+                  method: 'POST',
+                  headers: new Headers({
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                  }),
+                  body: encodedKey + "=" + encodedValue
                 })
+                  .then((response) => response.text())
+                  .then((responseText) => {
+                    // get skin color range
+                    fetch('http://35.189.40.50:5050/v1/' + responseText)
+                      .then((response2) => response2.text())
+                      .then((responseText2) => {
+                        var json = JSON.parse(responseText2)
+
+                          ; (async () => {
+                            // save to local
+                            await AsyncStorage.setItem('@ProfilePic-Url', data.proPicUrl);
+                            await AsyncStorage.setItem('@DOB', data.DOB);
+                            await AsyncStorage.setItem('@Gender', data.gender);
+                            await AsyncStorage.setItem('@Skin-Color', responseText);
+                            await AsyncStorage.setItem('@Skin-Color-Range', json.colors[0].name);
+                            // calculate age
+                            var today = new Date();
+                            const age = today.getFullYear() - ((data.DOB).split('-')[0]);
+                            // consloe.warn(age);
+                            await AsyncStorage.setItem('@Age', JSON.stringify(age));
+
+                            this.setState({ isLoading: false });
+                          })();
+                      })
+                  })
+              })()
                 .catch((error) => {
-                  console.warn(error);
+                  
                 });
-            }else{
+            }else if(profilePicUrl != null){
               this.setState({ isLoading: false });
             }
           })
@@ -93,7 +96,8 @@ export default class HomeScreen extends Component {
 
         
       }
-    } catch (error) {
+    } catch (e) {
+      console.warn(e.message);
     }
   };
 
@@ -131,24 +135,33 @@ export default class HomeScreen extends Component {
     }
 
     let occassion = this.state.event;
-    if(occassion == "dinner"){
+    if(occassion.toLowerCase() == "dinner"){
       occassion =3;
-    }else if (occassion == "Night Party"){
+    }else if (occassion.toLowerCase() == "night party"){
       occassion =2;
-    }else if (occassion == "B'Day Party"){
+    }else if (occassion.toLowerCase() == "b'day party"){
       occassion = 1;
     }
 
-    fetch('http://35.189.40.50:8080/api?gender='+gender+'&skin_color='+skinColor+'&occassion='+occassion+'&age='+age)
+    fetch('http://35.189.40.50:8080/api?gender=' + gender + '&skin_color=' + skinColor + '&occassion=' + occassion + '&age=' + age)
       .then((response) => response.text())
       .then((responseText) => {
+        if (responseText.includes("<!")) {
+          this.setState(
+            {
+              isLoading: false,
+              showError: true,
+            });
+        } else {
         this.setState(
           {
             color: responseText,
             colorLink: 'color/' + responseText,
             showTitle: true,
+            showError: false,
             isLoading: false,
           });
+      }
       });
   }
 
@@ -179,12 +192,19 @@ export default class HomeScreen extends Component {
 
           {(this.state.showTitle) &&
             <View style={{ borderBottomWidth: 1, backgroundColor: '#f7f7f8', borderColor: '#c8c7cc' }}>
-              <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 16, textAlign:'center' }}>
-              The most prefered Color for your {this.state.event} is {"\n"}
-              {this.state.color}</Text>
+              <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 16, textAlign: 'center' }}>
+                The most prefered Color for your {this.state.event} is {"\n"}
+                {this.state.color}</Text>
             </View>
           }
 
+          {(this.state.showError) &&
+            <View style={{ borderBottomWidth: 1, backgroundColor: '#f7f7f8', borderColor: '#c8c7cc', paddingLeft:10, paddingRight:10 }}>
+              <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 16, textAlign: 'center', color: 'red' }}>
+                Some Error occured. This can be happen because of the occassion you are trying to find is currently not available.
+              </Text>
+            </View>
+          }
           <View style={styles.GridContainer}>
             <ImageGrid event={this.state.colorLink} />
           </View>

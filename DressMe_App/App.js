@@ -24,6 +24,8 @@ YellowBox.ignoreWarnings(['componentWillUpdate']);
 YellowBox.ignoreWarnings(['componentWillReceiveProps']);
 YellowBox.ignoreWarnings(['componentWillMount']);
 YellowBox.ignoreWarnings(['Setting a timer']);
+YellowBox.ignoreWarnings(['code_']);
+YellowBox.ignoreWarnings(['Require cycle']);
 
 export default class App extends Component<Props> {
    constructor(props) {

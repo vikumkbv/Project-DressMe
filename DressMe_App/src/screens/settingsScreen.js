@@ -164,7 +164,7 @@ export default class SettingsScreen extends Component {
           <SettingsList.Item
             hasNavArrow={false}
             switchState={this.state.switchValue}
-            switchOnValueChange={this.onValueChange}
+            switchOnValueChange={this.changeTheme}
             hasSwitch={true}
             title='Dark Mode' />
           <SettingsList.Item
