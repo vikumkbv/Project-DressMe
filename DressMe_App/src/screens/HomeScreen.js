@@ -139,7 +139,8 @@ export default class HomeScreen extends Component {
       occassion =3;
     }else if (occassion.toLowerCase() == "night party"){
       occassion =2;
-    }else if (occassion.toLowerCase() == "b'day party"){
+    }else if (occassion.toLowerCase() == "b'day party" || occassion.toLowerCase() == "birthday"
+       || occassion.toLowerCase() == "birthday party" || occassion.toLowerCase() == "bday" || occassion.toLowerCase() == "Bday"){
       occassion = 1;
     }
 
