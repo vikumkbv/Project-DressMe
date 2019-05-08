@@ -24,7 +24,7 @@ export default class SettingsScreen extends Component {
     
     itemsRef.on('value', (snapshot) => {
       let data = snapshot.val();
-      this.setState({ ProPicurl: data.proPicUrl }, () => {
+      this.setState({ proPicurl: data.proPicUrl }, () => {
         this.setState({ loading: false });
       });
       this.setState({ bDay: data.DOB });
@@ -75,6 +75,15 @@ export default class SettingsScreen extends Component {
     const Blob = RNFetchBlob.polyfill.Blob
     window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
     window.Blob = Blob
+    const Fetch = RNFetchBlob.polyfill.Fetch
+    // replace built-in fetch
+    window.fetch = new Fetch({
+        // enable this option so that the response data conversion handled automatically
+        auto: true,
+        binaryContentTypes: [
+            'image/',
+        ]
+    }).build()
 
     let uploadBlob = null
     const imageRef = firebase.storage().ref('users').child(user.uid + "/proPic.jpg")
@@ -135,7 +144,7 @@ export default class SettingsScreen extends Component {
                 }}
                 resizeMode='cover'
                 source={{
-                  uri: this.state.ProPicurl
+                  uri: this.state.proPicurl
                 }}
               />
             </PhotoUpload>

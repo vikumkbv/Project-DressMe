@@ -27,17 +27,21 @@ export default class HomeScreen extends Component {
     try {
       // check theme
       const value = await AsyncStorage.getItem('@Dark-Theme');
-      if (value !== null) {
+      if (value != null) {
         if(value == 'false'){
           themes[0].apply();
         }else{
           themes[1].apply();
         }
-
+      }     
         this.setState({ isLoading: true });
         // check skin color
-        ; (async () => {
+        ; (async () => {                         
           const profilePicUrl = await AsyncStorage.getItem('@ProfilePic-Url');
+
+          let age = await AsyncStorage.getItem('@Age');
+          let gender = await AsyncStorage.getItem('@Gender');
+          let clr = await AsyncStorage.getItem('@Skin-Color-Range');
 
           // get proPic from database
           var user = firebase.auth().currentUser;
@@ -45,11 +49,11 @@ export default class HomeScreen extends Component {
 
           itemsRef.on('value', (snapshot) => {
             let data = snapshot.val();
-            if (data != null && (data.proPicUrl != profilePicUrl)) {
+            if (data != null && ((data.proPicUrl != profilePicUrl) || (age == null) || (gender == null) || (clr == null))) {
 
               // get skin tone
               var encodedKey = encodeURIComponent('pic');
-              var encodedValue = encodeURIComponent(profilePicUrl);
+              var encodedValue = encodeURIComponent(data.proPicUrl);
 
               ; (async () => {
                 await fetch("http://35.189.40.50:5000/result/", {
@@ -61,10 +65,12 @@ export default class HomeScreen extends Component {
                 })
                   .then((response) => response.text())
                   .then((responseText) => {
+                  
                     // get skin color range
                     fetch('http://35.189.40.50:5050/v1/' + responseText)
                       .then((response2) => response2.text())
                       .then((responseText2) => {
+                           
                         var json = JSON.parse(responseText2)
 
                           ; (async () => {
@@ -79,7 +85,7 @@ export default class HomeScreen extends Component {
                             const age = today.getFullYear() - ((data.DOB).split('-')[0]);
                             // consloe.warn(age);
                             await AsyncStorage.setItem('@Age', JSON.stringify(age));
-
+                          
                             this.setState({ isLoading: false });
                           })();
                       })
@@ -94,10 +100,8 @@ export default class HomeScreen extends Component {
           })
         })();
 
-        
-      }
     } catch (e) {
-      console.warn(e.message);
+      console.warn(e);
     }
   };
 
