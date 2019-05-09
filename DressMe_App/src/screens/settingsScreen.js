@@ -102,7 +102,10 @@ export default class SettingsScreen extends Component {
         itemsRef.update({
           proPicUrl: url
         });
-        this.setState({ loading: false })
+        this.setState({ 
+          loading: false,
+          proPicurl: url, 
+        })
       })
   }
 
@@ -121,34 +124,34 @@ export default class SettingsScreen extends Component {
   render() {
     return (
       <View style={{ backgroundColor: '#EFEFF4', flex: 1 }}>
-      <View style={{ borderBottomWidth: 1, backgroundColor: '#f7f7f8', borderColor: '#c8c7cc' }}>
-        <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 16 }}>Settings</Text>
-      </View>
-      <View style={{ flex: 1 }}>
+        <View style={{ borderBottomWidth: 1, backgroundColor: '#f7f7f8', borderColor: '#c8c7cc' }}>
+          <Text style={{ alignSelf: 'center', marginTop: 10, marginBottom: 10, fontWeight: 'bold', fontSize: 16 }}>Settings</Text>
+        </View>
+        <View style={{ backgroundColor: 'white', paddingTop: 10, height: 200 }}>
+          <PhotoUpload
+            onPhotoSelect={avatar => {
+              if (avatar) {
+                this.onPhotoChange(avatar);
+              }
+            }}
+          >
+            <Image
+              style={{
+                paddingVertical: 30,
+                width: 150,
+                height: 150,
+                borderRadius: 75
+              }}
+              resizeMode='cover'
+              source={{
+                uri: this.state.proPicurl
+              }}
+            />
+          </PhotoUpload>
+        </View>
+        <View style={{ flex: 1 }}>
         <SettingsList borderColor='#c8c7cc' defaultItemSize={50}>
           <SettingsList.Header headerStyle={{ marginTop: 5 }} />
-          <View style={{ backgroundColor: 'white', paddingTop: 10 }}>
-            <PhotoUpload
-              onPhotoSelect={avatar => {
-                if (avatar) {
-                  this.onPhotoChange(avatar);
-                }
-              }}
-            >
-              <Image
-                style={{
-                  paddingVertical: 30,
-                  width: 150,
-                  height: 150,
-                  borderRadius: 75
-                }}
-                resizeMode='cover'
-                source={{
-                  uri: this.state.proPicurl
-                }}
-              />
-            </PhotoUpload>
-          </View>
           <SettingsList.Item
             title='Name'
             titleInfo={this.state.name}

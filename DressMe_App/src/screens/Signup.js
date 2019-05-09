@@ -183,9 +183,9 @@ export default class Signup extends Component {
                                             borderRadius: 75
                                         }}
                                         resizeMode='cover'
-                                        source={{
-                                            uri: 'https://studycrafter.com/wp-content/uploads/2017/12/IAFOR-Blank-Avatar-Image-1-768x768.jpg'
-                                        }}
+                                        source={
+                                            require('../assets/img/avatar.jpg')
+                                        }
                                     />
                                 </PhotoUpload>
 
